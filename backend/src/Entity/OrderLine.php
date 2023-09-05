@@ -19,13 +19,13 @@ class OrderLine
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank]
-    #[Groups(['get_order'])]
+    #[Groups(['get_order', 'create_order'])]
     private ?Product $product = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Assert\Range(min: 0)]
-    #[Groups(['get_order'])]
+    #[Groups(['get_order', 'create_order', 'update_order'])]
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderLines')]

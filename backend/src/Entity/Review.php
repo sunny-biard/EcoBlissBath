@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ReviewRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
@@ -20,14 +21,17 @@ class Review
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups('create')]
     private ?string $title = null;
 
     #[ORM\Column(length: 500, nullable: true)]
     #[Assert\NotBlank]
+    #[Groups('create')]
     private ?string $comment = null;
 
     #[ORM\Column]
     #[Assert\Range(min: 1, max: 5)]
+    #[Groups('create')]
     private ?int $rating = null;
 
     #[ORM\ManyToOne]

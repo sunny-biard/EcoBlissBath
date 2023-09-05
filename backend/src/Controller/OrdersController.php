@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use OpenApi\Attributes as OA;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Entity\Order;
 use App\Entity\OrderLine;
 use App\Entity\User;
@@ -21,9 +23,23 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+#[OA\Tag("Commandes")]
 class OrdersController extends AbstractController
 {
+
+    /**
+     * Récupère le panier en cours chez l'utilisateur courant
+     */
     #[Route('/orders', name: 'get_order', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Commande en cours',
+        content: new Model(type: Order::class, groups: ['get_order'])
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Aucune commande en cours',
+    )]    
     public function getCurrentOrder(OrderRepository $orderRepository): JsonResponse
     {
         if (!$this->isGranted('ROLE_USER')) {
@@ -39,7 +55,19 @@ class OrdersController extends AbstractController
         return $this->json($order, Response::HTTP_OK, [], ['groups' => ['get_order']]);
     }
 
+    /**
+     * Ajoute un produit dans le panier
+     */
     #[Route('/orders/add', name: 'add_product_to_cart', methods: ['PUT'])]
+    #[OA\RequestBody(
+        description: 'Informations du produit à ajouter',
+        content: new Model(type: OrderLine::class, groups: ['create_order'])
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Panier mis à jour',
+        content: new Model(type: Order::class, groups: ['get_order'])
+    )]
     public function addProductToCart(Request $request, OrderRepository $orderRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         if (!$this->isGranted('ROLE_USER')) {
@@ -86,7 +114,25 @@ class OrdersController extends AbstractController
         return $this->json($order, Response::HTTP_OK, [], ['groups' => ['get_order']]);
     }
 
+    /**
+     * Supprime un produit du panier
+     */
     #[Route('/orders/{id}/delete', name: 'delete_product_from_cart', methods: ['DELETE'])]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        description: 'ID de la ligne du panier à supprimer',
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Produit supprimé',
+        content: new Model(type: Order::class, groups: ['get_order'])
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Produit non trouvé',
+    )]
     public function deleteProductFromCart($id, #[User] UserInterface $user, OrderLineRepository $orderLineRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         if (!$this->isGranted('ROLE_USER')) {
@@ -108,7 +154,29 @@ class OrdersController extends AbstractController
         return $this->json($order, Response::HTTP_OK, [], ['groups' => ['get_order']]);
     }
 
+    /**
+     * Modifie la quantité d'un produit dans le panier
+     */
     #[Route('/orders/{id}/change-quantity', name: 'change_product_from_cart', methods: ['PUT'])]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        description: 'ID de la ligne du panier à modifier',
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\RequestBody(
+        description: 'Informations du produit à modifier',
+        content: new Model(type: OrderLine::class, groups: ['update_order'])
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Produit mis à jour',
+        content: new Model(type: OrderLine::class, groups: ['get_order'])
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Produit non trouvé',
+    )]
     public function changeProduct(Request $request, $id, #[User] UserInterface $user, OrderRepository $orderRepository, OrderLineRepository $orderLineRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         if (!$this->isGranted('ROLE_USER')) {
@@ -133,7 +201,23 @@ class OrdersController extends AbstractController
         return $this->json($orderLine->getLinkedOrder(), Response::HTTP_OK, [], ['groups' => ['get_order']]);
     }
 
+    /**
+     * Crée / valide la commande en cours
+     */
     #[Route('/orders', name: 'post_order', methods: ['POST'])]
+    #[OA\RequestBody(
+        description: 'Informations de commande',
+        content: new Model(type: Order::class, groups: ['create'])
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Commande validée',
+        content: new Model(type: Order::class, groups: ['get_order'])
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Pas de commande en cours',
+    )]
     public function postOrder(Request $request, UserInterface $user, OrderRepository $orderRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         if (!$this->isGranted('ROLE_USER')) {

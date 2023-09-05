@@ -26,28 +26,28 @@ class Order
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
-    #[Groups(['get_order'])]
+    #[Groups(['get_order', 'create'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
-    #[Groups(['get_order'])]
+    #[Groups(['get_order', 'create'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
-    #[Groups(['get_order'])]
+    #[Groups(['get_order', 'create'])]
     private ?string $address = null;
 
     #[ORM\Column(length: 5, nullable: true)]
     #[Assert\NotBlank]
     #[Assert\Length(exactly: 5)]
-    #[Groups(['get_order'])]
+    #[Groups(['get_order', 'create'])]
     private ?string $zipCode = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
-    #[Groups(['get_order'])]
+    #[Groups(['get_order', 'create'])]
     private ?string $city = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

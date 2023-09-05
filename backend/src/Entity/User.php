@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use OpenApi\Attributes as OA;
 use App\Repository\UserRepository;
 use Attribute;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -24,9 +26,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
+    #[Groups('create')]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[OA\Property(type: "array", items: new OA\Items(type: "string"))]
     private array $roles = [];
 
     /**
@@ -37,14 +41,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups('create')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups('create')]
     private ?string $lastname = null;
 
     #[Assert\NotBlank]
     #[Assert\Length(min: 5)]
+    #[Groups('create')]
     private string $plainPassword;
 
     public function getId(): ?int
