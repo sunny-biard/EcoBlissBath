@@ -61,7 +61,10 @@ class OrdersController extends AbstractController
     #[Route('/orders/add', name: 'add_product_to_cart', methods: ['PUT'])]
     #[OA\RequestBody(
         description: 'Informations du produit à ajouter',
-        content: new Model(type: OrderLine::class, groups: ['create_order'])
+        content: new OA\JsonContent(type: 'object', properties: [
+            new OA\Property(property: 'product', type: 'integer'), 
+            new OA\Property(property: 'quantity', type: 'integer'),
+        ])
     )]
     #[OA\Response(
         response: 200,
