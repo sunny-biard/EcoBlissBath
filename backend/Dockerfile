@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 COPY . .
-RUN composer install --prefer-dist --no-progress --no-interaction
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 
 EXPOSE 8081
 CMD php -S 0.0.0.0:8081 -t public/
