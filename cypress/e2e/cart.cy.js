@@ -170,4 +170,45 @@ describe('Cart', () => {
       });
   
     })
+
+    it('Should not add a product with a negative quantity to the cart', () => {
+
+      /* Accès à la page du produit */
+      cy.get('[data-cy="product"]').contains('Milkyway').siblings('[class="add-to-cart"]').find('[data-cy="product-link"]').click();
+  
+      cy.wait(1000);
+  
+      /* Sauvegarde et sélection de la quantité à ajouter au panier */
+      let quantity = -1;
+      cy.get('[data-cy="detail-product-quantity"]').clear();
+      cy.get('[data-cy="detail-product-quantity"]').type(quantity.toString());
+      
+      /* Ajout du produit au panier */
+      cy.get('[data-cy="detail-product-add"]').click();
+  
+      /* Vérification du panier en cours par requête API */
+      cy.apiLogin("test2@test.fr", "testtest").then(response => {
+        expect(response.status).to.eq(200);
+  
+        const token = response.body.token;
+  
+        cy.request({
+          method: "GET",
+          url: `localhost:8081/orders`,
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }).then((response) => {
+          expect(response.status).to.eq(200);
+  
+          expect(response.body.orderLines).to.be.empty;
+        });
+      });
+  
+      cy.wait(1000);
+  
+      /* Vérification de l'échec de l'ajout au panier */
+      cy.get('h1').contains('Commande').should('not.exist');
+  
+    })
 })
