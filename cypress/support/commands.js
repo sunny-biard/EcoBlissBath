@@ -4,8 +4,8 @@ Cypress.Commands.add("apiLogin", (email, pwd) => {
         method: "POST",
         url: `localhost:8081/login`,
         body: {
-          username: `${email}`,
-          password: `${pwd}`,
+          username: email,
+          password: pwd,
         },
         failOnStatusCode: false,
     }).then((response) => {
@@ -21,8 +21,8 @@ Cypress.Commands.add("login", (email, pwd) => {
     cy.get('[data-cy="login-input-username"]').clear();
     cy.get('[data-cy="login-input-password"]').clear();
 
-    cy.get('[data-cy="login-input-username"]').type(`${email}`);
-    cy.get('[data-cy="login-input-password"]').type(`${pwd}`);
+    cy.get('[data-cy="login-input-username"]').type(email);
+    cy.get('[data-cy="login-input-password"]').type(pwd);
 
     cy.get('[data-cy="login-submit"]').click();
 
