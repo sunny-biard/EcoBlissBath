@@ -43,23 +43,6 @@ services:
     ports:
       - 3307:3306
 
-  cypress:
-    build: 
-      context: .
-      dockerfile: ./cypress/Dockerfile
-    depends_on: 
-      - angular
-    command: npx cypress run
-    environment:
-      - CYPRESS_baseUrl=http://angular:8080
-      - CYPRESS_username=test2@test.fr
-      - CYPRESS_password=testtest
-    networks:
-      - symfony
-    volumes:
-      - ./cypress:/app/cypress
-      - ./cypress.config.js:/app/cypress.config.js
-
 networks:
   symfony:
   
