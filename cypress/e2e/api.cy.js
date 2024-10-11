@@ -123,7 +123,7 @@ describe('Orders', () => {
           "quantity": 1
         }
       }).then((response) => {
-        expect(response.status).to.eq(401);
+        expect(response.status).to.eq(400);
       });
     });
 
