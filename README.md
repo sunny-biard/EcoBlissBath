@@ -28,4 +28,4 @@ $ npx cypress run --browser <navigateur>
 
 # Rapports de test
 
-- A la suite de l'exécution des tests , les rapports seront disponibles dans le dossier _mochawesome-report_.
+- A la suite de l'exécution des tests , les rapports seront disponibles dans le dossier _mochawesome-report_ aux formats HTML et JSON.
