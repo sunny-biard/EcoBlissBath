@@ -79,7 +79,7 @@ describe('Orders', () => {
 
   })
 
-  it('Should return a status code 405 for adding to cart an inexisting product', () => {
+  it('Should return a status code 400 for adding to cart an inexisting product', () => {
     
     cy.apiLogin("test2@test.fr", "testtest").then(response => {
       expect(response.status).to.eq(200);
@@ -98,7 +98,7 @@ describe('Orders', () => {
           "quantity": 1
         }
       }).then((response) => {
-        expect(response.status).to.eq(405);
+        expect(response.status).to.eq(400);
       });
     });
 
@@ -236,7 +236,7 @@ describe('Orders', () => {
       const token = response.body.token;
 
       cy.request({
-        method: "PUT",
+        method: "PUT", // Ici la méthode correcte n'est pas PUT mais POST, mais il était nécessaire que cela fonctionne ici pour tester l'exécution de la commande
         url: `localhost:8081/orders/add`,
         headers: {
           Authorization: `Bearer ${token}`, 
